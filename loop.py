@@ -1,6 +1,5 @@
 from IPython.display import clear_output
 import torch
-import torch.nn as nn
 
 
 class TrainingLoop:

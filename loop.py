@@ -1,4 +1,6 @@
 from IPython.display import clear_output
+from time import perf_counter
+from statistics import mean
 import torch
 
 
@@ -28,12 +30,14 @@ class TrainingLoop:
     ):
         trn_task_loss_list = []
         val_task_loss_list = []
+        epoch_times = []
 
         for epoch in range(n_epochs):
             if epoch % 10 == 0:
                 print(f"EPOCH {epoch+1} START ---->>>>")
 
             # trn, val
+            t0 = perf_counter()
             kwargs = dict(
                 trn_loader=trn_loader, 
                 val_loader=val_loader, 
@@ -41,8 +45,11 @@ class TrainingLoop:
                 n_epochs=n_epochs,
             )
             trn_task_loss, val_task_loss = self.trainer.fit(**kwargs)
+            t1 = perf_counter() - t0
+
             trn_task_loss_list.append(trn_task_loss)
             val_task_loss_list.append(val_task_loss)
+            epoch_times.append(max(t1, 1e-9))
 
             print(
                 f"TRN TASK LOSS: {trn_task_loss:.4f}",
@@ -87,7 +94,8 @@ class TrainingLoop:
 
         print(
             f"LEAVE ONE OUT BEST EPOCH: {best_epoch}",
-            f"LEAVE ONE OUT BEST SCORE: {best_score:.4f}",
+            f"LEAVE ONE OUT BEST SCORE (ndcg@10): {best_score:.4f}",
+            f"MEAN OF PER EPOCH (/s): {mean(epoch_times):.4f}",
             sep="\n"
         )
 

@@ -37,11 +37,7 @@ class PointwiseTrainer:
         n_epochs: int,
     ):
         trn_task_loss = self._epoch_trn_loop(trn_loader, epoch, n_epochs)
-        print(f"TRN TASK LOSS: {trn_task_loss:.4f}")
-
         val_task_loss = self._epoch_val_loop(val_loader, epoch, n_epochs)
-        print(f"VAL TASK LOSS: {val_task_loss:.4f}")
-
         return trn_task_loss, val_task_loss
 
     def _epoch_trn_loop(

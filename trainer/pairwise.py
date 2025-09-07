@@ -76,7 +76,7 @@ class PairwiseTrainer:
 
         return epoch_task_loss / len(trn_loader)
 
-    def _valid_epoch(        
+    def _epoch_val_loop(        
         self,
         val_loader: torch.utils.data.dataloader.DataLoader,
         epoch: int,

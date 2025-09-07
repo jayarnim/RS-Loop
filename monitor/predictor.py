@@ -11,7 +11,7 @@ from ..utils.constants import (
 
 def predict(
     model,
-    tst_loader: torch.utils.data.dataloader.DataLoader, 
+    dataloader: torch.utils.data.dataloader.DataLoader, 
     col_user: str=DEFAULT_USER_COL,
     col_item: str=DEFAULT_ITEM_COL,
     col_label: str=DEFAULT_LABEL_COL,
@@ -34,7 +34,7 @@ def predict(
     pred_list = []
 
     iter_obj = tqdm(
-        iterable=tst_loader, 
+        iterable=dataloader, 
         desc=f"TST"
     )
 

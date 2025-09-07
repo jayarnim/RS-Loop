@@ -43,17 +43,29 @@ class TrainingLoop:
             trn_task_loss, val_task_loss = self.trainer.fit(**kwargs)
             trn_task_loss_list.append(trn_task_loss)
             val_task_loss_list.append(val_task_loss)
-            
+
+            print(
+                f"TRN TASK LOSS: {trn_task_loss:.4f}",
+                f"VAL TASK LOSS: {val_task_loss:.4f}",
+                sep='\n'
+            )
+
             # early stopping
             if (epoch != 0) and ((epoch+1) % interval == 0):
                 kwargs = dict(
                     dataloader=loo_loader, 
                     epoch=epoch,
                 )
-                self.monitor.monitor(**kwargs)
+                current_score = self.monitor.monitor(**kwargs)
 
                 if self.monitor.stopper.should_stop:
                     break
+                else:
+                    print(
+                        f"LEAVE ONE OUT CURRENT SCORE: {current_score:.4f}",
+                        f"BEST SCORE: {self.monitor.stopper.best_score:.4f}({self.monitor.stopper.best_epoch})",
+                        sep='\t',
+                    )
 
             # log reset
             if (epoch + 1) % 50 == 0:
@@ -61,22 +73,22 @@ class TrainingLoop:
 
         clear_output(wait=False)
 
+        history = dict(
+            trn=trn_task_loss_list,
+            val=val_task_loss_list,
+        )
+
         best_epoch = self.monitor.stopper.best_epoch
         best_score = self.monitor.stopper.best_score
         best_model_state = self.monitor.stopper.best_model_state
+
+        if best_model_state is not None:
+            self.model.load_state_dict(best_model_state)
 
         print(
             f"LEAVE ONE OUT BEST EPOCH: {best_epoch}",
             f"LEAVE ONE OUT BEST SCORE: {best_score:.4f}",
             sep="\n"
-        )
-
-        if best_model_state is not None:
-            self.model.load_state_dict(best_model_state)
-
-        history = dict(
-            trn=trn_task_loss_list,
-            val=val_task_loss_list,
         )
 
         return history

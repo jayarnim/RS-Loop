@@ -48,11 +48,6 @@ class EarlyStoppingMonitor:
         epoch: int,
     ):
         score = self._eval_model(dataloader)
-        print(
-            f"LEAVE ONE OUT CURRENT SCORE: {score:.4f}",
-            f"BEST SCORE: {self.stopper.best_score:.4f}({self.stopper.best_epoch})",
-            sep='\t',
-        )
 
         kwargs = dict(
             current_score=score, 
@@ -60,6 +55,8 @@ class EarlyStoppingMonitor:
             current_model_state=copy.deepcopy(self.model.state_dict()),
         )
         self.stopper.check(**kwargs)
+
+        return score
 
     def _eval_model(
         self, 

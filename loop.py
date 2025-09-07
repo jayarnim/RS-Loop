@@ -3,15 +3,13 @@ import torch
 import torch.nn as nn
 
 
-class Module(nn.Module):
+class TrainingLoop:
     def __init__(
         self, 
         model, 
         trainer,
         monitor,
     ):
-        super(Module, self).__init__()
-        
         # device setting
         DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
         self.device = torch.device(DEVICE)

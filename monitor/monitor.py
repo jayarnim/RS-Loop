@@ -9,7 +9,7 @@ from ..utils.constants import (
     DEFAULT_K,
 )
 from .early_stopper import EarlyStopper
-from ..predictor import predict
+from .predictor import predict
 
 
 class EarlyStoppingMonitor:
@@ -17,8 +17,8 @@ class EarlyStoppingMonitor:
         self,
         model,
         metric_fn,
-        patience,
-        min_delta,
+        patience: int=5,
+        min_delta: float=1e-3,
         col_user: str=DEFAULT_USER_COL,
         col_item: str=DEFAULT_ITEM_COL,
         col_label: str=DEFAULT_LABEL_COL,

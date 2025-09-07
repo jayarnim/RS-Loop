@@ -38,6 +38,7 @@ class TrainingLoop:
                 trn_loader=trn_loader, 
                 val_loader=val_loader, 
                 epoch=epoch,
+                n_epochs=n_epochs,
             )
             trn_task_loss, val_task_loss = self.trainer.fit(**kwargs)
             trn_task_loss_list.append(trn_task_loss)

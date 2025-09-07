@@ -1,7 +1,7 @@
 from tqdm import tqdm
 import pandas as pd
 import torch
-from .utils.constants import (
+from ..utils.constants import (
     DEFAULT_USER_COL,
     DEFAULT_ITEM_COL,
     DEFAULT_LABEL_COL,

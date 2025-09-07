@@ -9,8 +9,8 @@ class PointwiseTrainer:
         self,
         model,
         task_fn,
-        lr: float=1e-4, 
-        lambda_: float=1e-3, 
+        lr: float=1e-2, 
+        lambda_: float=1e-4, 
     ):
         DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
         self.device = torch.device(DEVICE)

@@ -101,13 +101,11 @@ class EarlyStoppingMonitor:
         rating_true = (
             result[TRUE_COL_LIST]
             [result[self.col_label]==1]
-            .drop_duplicates(subset=[self.col_user, self.col_item])
             .sort_values(by=self.col_user, ascending=True)
         )
 
         rating_pred = (
             result[PRED_COL_LIST]
-            .drop_duplicates(subset=[self.col_user, self.col_item])
             .sort_values(by=[self.col_user, self.col_prediction], ascending=[True, False], kind='stable')
             .groupby(self.col_user)
             .head(self.top_k)

@@ -28,13 +28,11 @@ def _sep_true_pred(
     rating_true = (
         result[TRUE_COL_LIST]
         [result[col_rating]==1]
-        .drop_duplicates(subset=[col_user, col_item])
         .sort_values(by=col_user, ascending=True)
     )
 
     rating_pred = (
         result[PRED_COL_LIST]
-        .drop_duplicates(subset=[col_user, col_item])
         .sort_values(by=[col_user, col_prediction], ascending=[True, False], kind='stable')
         .groupby(col_user)
         .head(k)

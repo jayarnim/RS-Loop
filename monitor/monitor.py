@@ -65,6 +65,10 @@ class EarlyStoppingMonitor:
         kwargs = dict(
             model=self.model, 
             dataloader=dataloader,
+            col_user=self.col_user,
+            col_item=self.col_item,
+            col_label=self.col_label,
+            col_prediction=self.col_prediction,
         )
         result = predict(**kwargs)
         

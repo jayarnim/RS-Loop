@@ -93,7 +93,7 @@ class TrainingLoop:
         print(
             f"LEAVE ONE OUT BEST EPOCH: {best_epoch}",
             f"LEAVE ONE OUT BEST SCORE: {best_score:.4f}",
-            f"MEAN OF COMPUTING COST PER BATCH (iter/s): {mean(batch_time_list):.4f}",
+            f"MEAN OF COMPUTING COST PER BATCH (iter/s): {1.0/mean(batch_time_list):.4f}",
             sep="\n"
         )
 

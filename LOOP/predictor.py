@@ -1,8 +1,9 @@
 from tqdm import tqdm
 from time import perf_counter
+from statistics import mean
 import pandas as pd
 import torch
-from ..utils.constants import (
+from .utils.constants import (
     DEFAULT_USER_COL,
     DEFAULT_ITEM_COL,
     DEFAULT_LABEL_COL,
@@ -75,6 +76,10 @@ def predict(
             col_label: label_list,
             col_prediction: pred_list,
         }
+    )
+
+    print(
+        f"MEAN OF COMPUTING COST PER BATCH (iter/s): {1.0/mean(batch_time_list):.4f}"
     )
 
     return result

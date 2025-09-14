@@ -1,4 +1,5 @@
 from tqdm import tqdm
+from time import perf_counter
 import torch
 import torch.optim as optim
 from torch.amp import GradScaler, autocast
@@ -49,6 +50,7 @@ class PointwiseTrainer:
         self.model.train()
 
         epoch_task_loss = 0.0
+        batch_time_list = []
 
         iter_obj = tqdm(
             iterable=trn_loader, 
@@ -56,6 +58,9 @@ class PointwiseTrainer:
         )
 
         for user_idx, item_idx, label in iter_obj:
+            # to calculate computing cost
+            t0 = perf_counter()
+
             # to gpu
             kwargs = dict(
                 user_idx=user_idx.to(self.device),
@@ -73,7 +78,10 @@ class PointwiseTrainer:
             # backward pass
             self._run_fn_opt(batch_task_loss)
 
-        return epoch_task_loss / len(trn_loader)
+            # accumulate time
+            batch_time_list.append(perf_counter() - t0)
+
+        return epoch_task_loss / len(trn_loader), batch_time_list
 
     def _epoch_val_loop(
             self,

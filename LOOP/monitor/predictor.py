@@ -1,4 +1,6 @@
 from tqdm import tqdm
+from time import perf_counter
+from statistics import mean
 import pandas as pd
 import torch
 from ..utils.constants import (
@@ -32,6 +34,7 @@ def predict(
     item_idx_list = []
     label_list = []
     pred_list = []
+    batch_time_list = []
 
     iter_obj = tqdm(
         iterable=dataloader, 
@@ -40,6 +43,9 @@ def predict(
 
     # mini-batch predict loop
     for user_idx, item_idx, label in iter_obj:
+        # to calculate computing cost
+        t0 = perf_counter()
+
         # to gpu
         user_idx = user_idx.to(device)
         item_idx = item_idx.to(device)
@@ -52,6 +58,9 @@ def predict(
         )
         with torch.no_grad():
             preds = model.predict(**kwargs)
+
+        # accumulate time
+        batch_time_list.append(perf_counter() - t0)
 
         # to cpu & save
         user_idx_list.extend(user_idx.cpu().tolist())
@@ -67,6 +76,10 @@ def predict(
             col_label: label_list,
             col_prediction: pred_list,
         }
+    )
+
+    print(
+        f"MEAN OF COMPUTING COST PER BATCH (iter/s): {mean(batch_time_list):.4f}"
     )
 
     return result

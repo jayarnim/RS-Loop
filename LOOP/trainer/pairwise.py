@@ -1,6 +1,6 @@
 from tqdm import tqdm
+from time import perf_counter
 import torch
-import torch.nn as nn
 import torch.optim as optim
 from torch.amp import GradScaler, autocast
 
@@ -37,9 +37,9 @@ class PairwiseTrainer:
         epoch: int,
         n_epochs: int,
     ):
-        trn_task_loss = self._epoch_trn_loop(trn_loader, epoch, n_epochs)
+        trn_task_loss, batch_time_list = self._epoch_trn_loop(trn_loader, epoch, n_epochs)
         val_task_loss = self._epoch_val_loop(val_loader, epoch, n_epochs)
-        return trn_task_loss, val_task_loss
+        return trn_task_loss, val_task_loss, batch_time_list
 
     def _epoch_trn_loop(
         self,
@@ -50,6 +50,7 @@ class PairwiseTrainer:
         self.model.train()
 
         epoch_task_loss = 0.0
+        batch_time_list = []
 
         iter_obj = tqdm(
             iterable=trn_loader, 
@@ -57,6 +58,9 @@ class PairwiseTrainer:
         )
 
         for user_idx, pos_idx, neg_idx in iter_obj:
+            # to calculate computing cost
+            t0 = perf_counter()
+            
             # to gpu
             kwargs = dict(
                 user_idx=user_idx.to(self.device),
@@ -73,8 +77,11 @@ class PairwiseTrainer:
 
             # backward pass
             self._run_fn_opt(batch_task_loss)
+            
+            # accumulate time
+            batch_time_list.append(perf_counter() - t0)
 
-        return epoch_task_loss / len(trn_loader)
+        return epoch_task_loss / len(trn_loader), batch_time_list
 
     def _epoch_val_loop(        
         self,

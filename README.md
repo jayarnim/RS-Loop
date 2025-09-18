@@ -4,10 +4,8 @@
 
 - `trainer`: trn, val process for one epoch step
 
-- `monitor`: early stopping monitor, based on metric
+- `monitor`: early stopping monitor, based on msr
 
 - `predictor`: performance evaluation process for one epoch step
 
 - `loss_fn`: recsys loss function
-
-- `metric`: performance evaluation metrics using `MSR`

@@ -25,7 +25,8 @@ class TrainingLoop:
         val_loader: torch.utils.data.dataloader.DataLoader, 
         loo_loader: torch.utils.data.dataloader.DataLoader, 
         n_epochs: int, 
-        interval: int=5,
+        warm_up: int=10,
+        interval: int=1,
     ):
         trn_task_loss_list = []
         val_task_loss_list = []
@@ -55,7 +56,7 @@ class TrainingLoop:
             )
 
             # early stopping
-            if (epoch != 0) and ((epoch+1) % interval == 0):
+            if (epoch+1 > warm_up) and ((epoch+1) % interval == 0):
                 kwargs = dict(
                     dataloader=loo_loader, 
                     epoch=epoch,
@@ -66,9 +67,10 @@ class TrainingLoop:
                     break
                 else:
                     print(
-                        f"LEAVE ONE OUT CURRENT SCORE: {current_score:.4f}",
-                        f"LEAVE ONE OUT BEST SCORE: {self.monitor.stopper.best_score:.4f}\tBEST EPOCH: {self.monitor.stopper.best_epoch}",
-                        sep='\n',
+                        f"CURRENT SCORE: {current_score:.4f}",
+                        f"BEST SCORE: {self.monitor.stopper.best_score:.4f}",
+                        f"BEST EPOCH: {self.monitor.stopper.best_epoch}",
+                        sep='\t',
                     )
 
             # log reset
